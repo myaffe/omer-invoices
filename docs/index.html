@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>סריקת חשבוניות</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: #f5f5f5;
+        }
+        .container {
+            text-align: center;
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+            max-width: 400px;
+        }
+        h1 { font-size: 24px; margin-bottom: 8px; }
+        p { color: #666; margin-bottom: 30px; }
+        button {
+            background: #4472C4;
+            color: white;
+            border: none;
+            padding: 16px 48px;
+            font-size: 20px;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+        button:hover { background: #3561b3; }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+        #status {
+            margin-top: 20px;
+            font-size: 16px;
+            min-height: 24px;
+        }
+        .success { color: #2e7d32; }
+        .error { color: #c62828; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>חשבוניות עומר</h1>
+        <p>לחצו על הכפתור כדי לסרוק את החשבוניות בתיקייה ולשלוח אקסל למייל</p>
+        <button id="btn" onclick="scan()">סרוק חשבוניות</button>
+        <div id="status"></div>
+    </div>
+    <script>
+        async function scan() {
+            const btn = document.getElementById('btn');
+            const status = document.getElementById('status');
+            btn.disabled = true;
+            btn.textContent = 'שולח...';
+            status.textContent = '';
+            status.className = '';
+            try {
+                const resp = await fetch('https://api.github.com/repos/myaffe/omer-invoices/dispatches', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer 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',
+                        'Accept': 'application/vnd.github+json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ event_type: 'scan-invoices' })
+                });
+                if (resp.status === 204 || resp.ok) {
+                    status.textContent = 'הסריקה התחילה! האקסל ישלח למייל תוך כמה דקות.';
+                    status.className = 'success';
+                } else {
+                    throw new Error('Status ' + resp.status);
+                }
+            } catch (e) {
+                status.textContent = 'שגיאה: ' + e.message;
+                status.className = 'error';
+            }
+            btn.disabled = false;
+            btn.textContent = 'סרוק חשבוניות';
+        }
+    </script>
+</body>
+</html>
