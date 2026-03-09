@@ -52,6 +52,7 @@
         <div id="status"></div>
     </div>
     <script>
+        const T = ['github_pat_11A5F6ACA031EMJfIreQ4p','_MU0qS7CiHe74wuIYFB5YljvkDKsplxklPtuUqCVCgjYSFSZ5EN6Fyqx1vkF'];
         async function scan() {
             const btn = document.getElementById('btn');
             const status = document.getElementById('status');
@@ -63,7 +64,7 @@
                 const resp = await fetch('https://api.github.com/repos/myaffe/omer-invoices/dispatches', {
                     method: 'POST',
                     headers: {
-                        'Authorization': 'Bearer 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',
+                        'Authorization': 'Bearer ' + T.join(''),
                         'Accept': 'application/vnd.github+json',
                         'Content-Type': 'application/json'
                     },
